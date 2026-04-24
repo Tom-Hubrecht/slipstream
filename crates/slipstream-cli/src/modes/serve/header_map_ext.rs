@@ -15,6 +15,9 @@ pub trait HeaderMapExt {
     /// Create a HeaderMap with appropriate CSS headers.
     fn css_headers() -> HeaderMap;
 
+    /// Create a HeaderMap with appropriate WOFF2 headers.
+    fn font_headers() -> HeaderMap;
+
     /// Create a HeaderMap with appropriate plaintext headers.
     fn plaintext_headers() -> HeaderMap;
 
@@ -60,6 +63,15 @@ impl HeaderMapExt for HeaderMap {
         headers.insert(
             axum::http::header::CONTENT_TYPE,
             axum::http::HeaderValue::from_static("text/css"),
+        );
+        headers
+    }
+
+    fn font_headers() -> HeaderMap {
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            axum::http::header::CONTENT_TYPE,
+            axum::http::HeaderValue::from_static("font/woff2"),
         );
         headers
     }

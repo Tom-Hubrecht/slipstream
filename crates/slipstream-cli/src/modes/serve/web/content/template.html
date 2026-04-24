@@ -1,104 +1,129 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>slipstream {{feed}}</title>
-    <meta name="description" content="slipstream serve feed {{feed}}">
-    <meta name="author" content="slipstream">
-    <meta name="keywords" content="slipstream, feed, {{feed}}, atom">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="/styles.css" />
-    <link rel="alternate" type="application/atom+xml" title="slipfeed{{feed}}/feed" href="{{feed}}/feed">
-    <style type="text/css" media="screen">
-      :root {
-        --pico-font-family-sans-serif: Inter, system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
-        --pico-font-size: 87.5%; /* Original: 100% */
-        --pico-line-height: 1.25;
-        --pico-form-element-spacing-vertical: 0.5rem;
-        --pico-form-element-spacing-horizontal: 1.0rem;
-        --pico-typography-spacing-vertical: 0.5rem;
-      }
-      article {
-        border: 1px solid var(--pico-muted-border-color);
-      }
-      .container {
-        max-width: 840px;
-      }
-      .sources {
-        color: rgb(0, 137, 90);
-      }
-      .tag {
-        color: rgb(255, 191, 0);
-        background: rgb(22, 16, 3);
-        margin: 0.2em;
-      }
-      .title {
-        align-items: center;
-      }
-      .feed-icon {
-        height: 1.25em;
-      }
-    </style>
-  </head>
-  <body>
-    <main class="container">
-      <section>
-        <h1>slipstream {{feed}}</h1>
-        <a href="{{feed}}/feed.xml">atom</a>
-      </section>
-      <section>
-        {{#each entries}}
-        <article>
-            <header class="title">
-              <h4 class="">
-                {{#if icon}}
-                <img src="{{icon}}" alt="Icon for the article source at {{source}}." class="feed-icon" />
-                {{/if}}
-                <span class="feed-title">
-                {{title}}
-                </span>
-              </h4>
-            </header>
-          {{#if author}}
-          <p>{{author}}</p>
-          {{/if}}
-          <p>{{date}}</p>
-          {{#if content}}
-          <summary>
-            {{{content}}}
-          </summary>
-          {{/if}}
-          <footer>
-            <p class="sources">{{sources}}</p>
+
+<head>
+  <meta charset="utf-8" />
+  <title>slipstream {{feed}}</title>
+  <meta name="description" content="slipstream serve feed {{feed}}" />
+  <meta name="author" content="slipstream" />
+  <meta name="keywords" content="slipstream, feed, {{feed}}, atom" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/styles.css" />
+  <link rel="alternate" type="application/atom+xml" title="slipfeed{{feed}}/feed" href="{{feed}}/feed" />
+  <style type="text/css" media="screen">
+    :root {
+      --bulma-family-code: Atkinson Hyperlegible Mono, monospace;
+      --bulma-family-primary: Atkinson Hyperlegible Next, sans-serif;
+    }
+    @font-face {
+      font-family: "Atkinson Hyperlegible Mono";
+      src: url("/fonts/AtkinsonHyperlegibleMono-Regular.woff2") format("woff2");
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Atkinson Hyperlegible Next";
+      src: url("/fonts/AtkinsonHyperlegibleNext-Regular.woff2") format("woff2");
+      font-display: swap;
+    }
+    .card-header-icon.is-active .icon {
+      transform: rotate(0.5turn);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container p-4">
+    <section class="content">
+      <h3>
+        SlipStream {{feed}}
+        <a href="{{feed}}/feed.xml" class="button is-dark is-pulled-right">
+          <span class="icon-text">
+            <span class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 12v.01" />
+                <path
+                  d="M19.071 4.929c-1.562 -1.562 -6 .337 -9.9 4.243c-3.905 3.905 -5.804 8.337 -4.242 9.9c1.562 1.561 6 -.338 9.9 -4.244c3.905 -3.905 5.804 -8.337 4.242 -9.9" />
+                <path
+                  d="M4.929 4.929c-1.562 1.562 .337 6 4.243 9.9c3.905 3.905 8.337 5.804 9.9 4.242c1.561 -1.562 -.338 -6 -4.244 -9.9c-3.905 -3.905 -8.337 -5.804 -9.9 -4.242" />
+              </svg>
+            </span>
+            <span>Atom Feed</span>
+          </span>
+        </a>
+      </h3>
+    </section>
+    <section>
+      {{#each entries}}
+      <article class="card">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="tag mr-3">{{sources}}</span>
+            <span>{{title}}</span>
+            {{#if icon}}
+            <span class="icon ml-3">
+              <img src="{{icon}}" alt="Icon for the article source at {{source}}." class="feed-icon" />
+            </span>
+            {{/if}}
+          </p>
+          <span class="card-header-icon" aria-hidden="true" data-toggle="content-{{@index}}">
+            <span class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M6 9l6 6l6 -6" />
+              </svg>
+            </span>
+          </span>
+        </header>
+        {{#if content}}
+        <div class="card-content">
+          <div class="level mb-0">
+            <div class="level-left">
+              <span class="tag is-link">{{date}}</span>
+            </div>
+            {{#if author}}
+            <div class="level-right">
+              <span class="tag">{{author}}</span>
+            </div>
+            {{/if}}
+          </div>
+          <div id="content-{{@index}}" class="mt-3">
+            <summary class="content">{{{content}}}</summary>
             {{#if tags}}
-            <p>
+            <p class="tags">
               {{#each tags}}
-              <span>
-                <code class="tag">#{{this}}</code>
-              </span>
+              <a href="/tag/{{this}}" class="tag">#{{this}}</a>
               {{/each}}
             </p>
             {{/if}}
-            <div class="grid">
-              <div>
-                <a href="{{source.url}}" class="primary">Source</a>
-              </div>
-              {{#if comments.url}}
-              <div>
-                <a href="{{comments.url}}" class="secondary">Comments</a>
-              </div>
-              {{/if}}
-              </>
-              {{#each links}}
-              <div>
-                <a href="{{url}}" class="contrast">{{title}}</a>
-              </div>
-              {{/each}}
-            </div>
-          </footer>
-        </article>
-        {{/each}}
-      </section>
-    </main>
-  </body>
+          </div>
+        </div>
+        {{/if}}
+        <footer class="card-footer">
+          <a href="{{source.url}}" class="card-footer-item">Source</a>
+
+          {{#if comments.url}}
+          <a href="{{comments.url}}" class="card-footer-item">Comments</a>
+          {{/if}} {{#each links}}
+          <a href="{{url}}" class="card-footer-item">{{title}}</a>
+          {{/each}}
+        </footer>
+      </article>
+      {{/each}}
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll("[data-toggle]").forEach((el) => {
+      const target = document.getElementById(el.dataset.toggle);
+      el.addEventListener("click", () => {
+        el.classList.toggle("is-active");
+        target.classList.toggle("is-hidden");
+      });
+    });
+  </script>
+</body>
+
 </html>

@@ -16,6 +16,8 @@ pub struct HtmlServer {
     pub favicon: Arc<Vec<u8>>,
     pub robots_txt: Arc<String>,
     pub styles: Arc<String>,
+    pub font: Arc<Vec<u8>>,
+    pub font_mono: Arc<Vec<u8>>,
     templater: Arc<handlebars::Handlebars<'static>>,
     cache: HashMap<String, CacheEntry>,
     duration: slipfeed::Duration,
@@ -31,8 +33,14 @@ impl HtmlServer {
         )?;
         Ok(Self {
             favicon: HtmlServer::read_file_bytes("favicon.ico")?,
-            styles: HtmlServer::read_file("pico.blue.min.css")?,
+            styles: HtmlServer::read_file("bulma.min.css")?,
             robots_txt: HtmlServer::read_file("robots.txt")?,
+            font: HtmlServer::read_file_bytes(
+                "AtkinsonHyperlegibleNext-Regular.woff2",
+            )?,
+            font_mono: HtmlServer::read_file_bytes(
+                "AtkinsonHyperlegibleMono-Regular.woff2",
+            )?,
             cache: HashMap::new(),
             templater: Arc::new(handlebars),
             duration,

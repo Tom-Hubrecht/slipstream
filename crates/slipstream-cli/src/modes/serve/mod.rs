@@ -9,6 +9,7 @@ mod config;
 mod header_map_ext;
 mod web;
 
+use axum::response::IntoResponse;
 pub use config::*;
 use header_map_ext::HeaderMapExt;
 use web::*;
@@ -47,6 +48,7 @@ pub async fn serve_cli(
         .route("/tag/{tag}/feed.xml", axum::routing::get(get_tag_atom))
         .route("/styles.css", axum::routing::get(get_styles))
         .route("/robots.txt", axum::routing::get(get_robots_txt))
+        .route("/fonts/{name}", axum::routing::get(get_font))
         .route("/favicon.ico", axum::routing::get(get_favicon))
         .with_state(Arc::new(SFState {
             updater: Arc::new(updater),
@@ -55,7 +57,13 @@ pub async fn serve_cli(
             html,
         }));
     let port = port.unwrap_or(config.serve.port.unwrap_or(DEFAULT_PORT));
-    let address = address.unwrap_or(config.serve.address.clone().unwrap_or(DEFAULT_ADDRESS.into()));
+    let address = address.unwrap_or(
+        config
+            .serve
+            .address
+            .clone()
+            .unwrap_or(DEFAULT_ADDRESS.into()),
+    );
     let listener = tokio::net::TcpListener::bind(format!("{address}:{port}"))
         .await
         .expect(&format!("Unable to bind to port {}", port));
@@ -297,4 +305,21 @@ async fn get_favicon(
     tracing::debug!("/favicon.ico");
     let html = state.html.lock().await;
     return (HeaderMap::favicon_headers(), (*html.favicon).clone());
+}
+
+/// Get the font
+async fn get_font(
+    State(state): StateType,
+    axum::extract::Path(name): axum::extract::Path<String>,
+) -> impl axum::response::IntoResponse {
+    tracing::debug!("/font/{name}");
+    let html = state.html.lock().await;
+
+    let content = match name.as_str() {
+        "AtkinsonHyperlegibleNext-Regular.woff2" => (*html.font).clone(),
+        "AtkinsonHyperlegibleMono-Regular.woff2" => (*html.font_mono).clone(),
+        _ => return (axum::http::StatusCode::NOT_FOUND,).into_response(),
+    };
+
+    return (HeaderMap::font_headers(), content).into_response();
 }
